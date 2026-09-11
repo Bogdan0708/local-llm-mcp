@@ -1,0 +1,14 @@
+{
+  "name": "local-llm-mcp",
+  "version": "2.0.0",
+  "description": "MCP server delegating mechanical tasks to a local LM Studio model (cost routing)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.23.0",
+    "undici": "^6.28.0"
+  }
+}

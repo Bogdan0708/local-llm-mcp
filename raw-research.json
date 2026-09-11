@@ -1,0 +1,394 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 110,
+  "logs": [
+    "Q: Comprehensive research on running local AI on an HP ZBook Ultra G1a laptop (AMD …",
+    "Decomposed into 6 angles: state-of-art software stack, benchmarks & memory allocation, local agent frameworks, hybrid cloud+local CLI workflow, Windows vs Linux tradeoff, recent developments & community",
+    "benchmarks & memory allocation: 6 results",
+    "state-of-art software stack: 6 results",
+    "state-of-art software stack: 5 novel (1 filtered)",
+    "Windows vs Linux tradeoff: 6 results",
+    "Windows vs Linux tradeoff: 4 novel (2 filtered)",
+    "hybrid cloud+local CLI workflow: 6 results",
+    "hybrid cloud+local CLI workflow: 4 novel (2 filtered)",
+    "local agent frameworks: 6 results",
+    "local agent frameworks: 4 novel (2 filtered)",
+    "recent developments & community: 6 results",
+    "recent developments & community: 4 novel (2 filtered)",
+    "Fetched 27 sources → 134 claims → verifying top 25",
+    "\"mcp-local-llm is an MCP server that lets Claude Co…\": 3-0 ✓",
+    "\"Hermes Agent is model-endpoint agnostic and connec…\": 3-0 ✓",
+    "\"Hermes Agent is an autonomous agent that does not …\": 3-0 ✓",
+    "\"The server exposes specific delegation tools (loca…\": 3-0 ✓",
+    "\"The recommended task split routes bulk summarizati…\": 3-0 ✓",
+    "\"The default GTT allocation (system RAM mappable in…\": 3-0 ✓",
+    "\"On Strix Halo (RDNA 3.5 APU), memory is mapped rat…\": 3-0 ✓",
+    "\"To run large models on the 128GB unified memory, k…\": 3-0 ✓",
+    "\"On a 128GB Strix Halo system, default config expos…\": 3-0 ✓",
+    "\"Variable Graphics Memory is a BIOS-level reallocat…\": 3-0 ✓",
+    "\"OpenClaw supports LM Studio as a native model prov…\": 3-0 ✓",
+    "\"OpenClaw requires a local model configured with mo…\": 3-0 ✓",
+    "\"The Strix Halo (Ryzen AI Max+) platform delivers 2…\": 1-2 ✗",
+    "\"AMD provides an official Best Known Configuration …\": 3-0 ✓",
+    "\"On a Ryzen AI Max+ with 128GB unified memory runni…\": 2-1 ✓",
+    "\"On the AMD Ryzen AI Max+ 395 with 128GB, Variable …\": 3-0 ✓",
+    "\"OpenClaw can route to local LLMs served via OpenAI…\": 3-0 ✓",
+    "\"Running models local-only is the strongest privacy…\": 3-0 ✓",
+    "\"To use the 128GB unified memory for large models o…\": 3-0 ✓",
+    "\"On the AMD Ryzen AI Max+ 395 Strix Halo with 128GB…\": 3-0 ✓",
+    "\"Running models locally via Ollama for the Hermes A…\": 3-0 ✓",
+    "\"Claude Code can be pointed at a local model server…\": 3-0 ✓",
+    "\"Vulkan (RADV) frequently matches or exceeds ROCm o…\": 2-1 ✓",
+    "\"Using Docker Model Runner with Claude Code lets yo…\": 1-2 ✗",
+    "\"On the Ryzen AI Max+ 395 'Strix Halo' (Radeon 8060…\": 0-3 ✗",
+    "Verify done: 25 claims → 22 confirmed, 3 killed"
+  ],
+  "result": {
+    "question": "Comprehensive research on running local AI on an HP ZBook Ultra G1a laptop (AMD Ryzen AI Max+ 395 \"Strix Halo\" APU, 128GB unified LPDDR5X RAM, Radeon 8060S integrated GPU/RDNA 3.5, XDNA 2 NPU). Cover: (1) latest 2025-2026 software developments for local LLM inference on Strix Halo for both Windows and Linux — llama.cpp/ROCm/Vulkan support, LM Studio, Ollama, AMD's Lemonade/GAIA stack, NPU utilization, how to allocate VRAM/GTT to use the 128GB unified memory for large models, performance benchmarks (tokens/sec) for models like Llama 70B, Qwen, GPT-OSS-120B, etc. (2) Running autonomous coding/agent frameworks locally — specifically Nous Research \"Hermes\" models and the \"OpenClaw\" agent — what they are, hardware fit, and how to set them up. (3) How to integrate local models into a Claude Code + OpenAI Codex CLI workflow to reduce API bills while preserving security/confidentiality — local model routing, which tasks to offload to local models vs cloud, MCP-based local model servers, privacy benefits of keeping code local. Recommend the optimal Windows vs Linux setup for this hardware.",
+    "summary": "Running local AI on the HP ZBook Ultra G1a (Ryzen AI Max+ 395 \"Strix Halo\", 128GB unified LPDDR5X, Radeon 8060S iGPU) is well-supported in 2025-2026, with AMD treating this exact part as a flagship local-AI platform. Because the memory is physically shared and mapped (not partitioned), the iGPU can address up to ~96-112GB of the 128GB pool, letting a single APU run 4-bit models up to ~128B parameters (e.g., gpt-oss-120b at ~50-57 tok/sec generation and ~685-720 tok/sec prompt processing) or FP16 models up to ~32B. On Windows you allocate VRAM via AMD Adrenalin (Variable Graphics Memory, set to 96GB, restart); on Linux you keep the BIOS reservation tiny (0.5GB) and raise the shared TTM/GTT limit (default ~50% of RAM) via /sys/module/ttm/parameters/pages_limit or the amd-ttm tool. For agent/coding workflows, AMD ships an official Best Known Configuration for the OpenClaw agent via WSL2 + LM Studio (llama.cpp backend) reaching ~45 tok/sec on Qwen 3.5 35B A3B with a 260K context and up to 6 concurrent agents; OpenClaw and Nous's Hermes Agent are both endpoint-agnostic (any OpenAI-compatible local server: LM Studio, Ollama, vLLM, SGLang, MLX), and Hermes does NOT run inference locally itself. To cut API bills while preserving confidentiality, point Claude Code at a local Anthropic-compatible endpoint (ANTHROPIC_BASE_URL via Docker Model Runner) or use an MCP delegation server (mcp-local-llm) that offloads bulk/mechanical work to the local model while Claude handles reasoning/architecture/security-sensitive tasks; local-only inference is the strongest privacy path (zero data egress, ~$0.01-0.05/session electricity). Net recommendation: Windows (Adrenalin VGM + LM Studio, optionally WSL2 for OpenClaw BKC) is the lowest-friction path AMD officially supports, while Linux unlocks larger GTT allocations and Vulkan/ROCm flexibility for power users.",
+    "findings": [
+      {
+        "claim": "Strix Halo unified memory is mapped, not partitioned — no VRAM-vs-system-RAM speed difference exists as on discrete GPUs; the real limiter is ~256GB/s LPDDR5X bandwidth, which applies equally to carveout VRAM and GTT.",
+        "confidence": "high",
+        "sources": [
+          "https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strixhalo.html"
+        ],
+        "evidence": "AMD ROCm docs state verbatim: 'Because memory is physically shared, there's no performance distinction like that of discrete GPUs where dedicated VRAM is significantly faster than system memory.' GART/GTT describe mapping limits, not separate physical pools. Independently corroborated by community llama.cpp benchmarks.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "Default GTT limit (system RAM mappable into GPU address space, used by PyTorch/AI workloads) is ~50% of total system RAM.",
+        "confidence": "high",
+        "sources": [
+          "https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strixhalo.html"
+        ],
+        "evidence": "ROCm docs: 'By default, the GTT limit is set to approximately 50 percent of total system RAM... the memory pool used by applications such as PyTorch and other AI/compute workloads.' GTT is dynamic, not permanently reserved.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "On Linux, to use the full 128GB for large models keep the BIOS dedicated VRAM reservation tiny (e.g., 0.5GB) and raise the shared TTM/GTT limit via /sys/module/ttm/parameters/pages_limit (pages, not bytes) or the amd-ttm utility (e.g., amd-ttm --set 100 for ~100GB, requires reboot).",
+        "confidence": "high",
+        "sources": [
+          "https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strixhalo.html"
+        ],
+        "evidence": "ROCm docs recommend keeping BIOS VRAM at 0.5GB and increasing TTM/GTT instead; amd-ttm converts pages to GB. Caveat: ROCm GitHub issue #5562 shows Strix Halo needs ttm.pages_limit (not Instinct-class amdttm.*), and some users hit a 62GB cap bug — tooling friction, not a refutation of the method.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "On Windows, Variable Graphics Memory (VGM) — a BIOS-level reallocation set via AMD Adrenalin (Performance > Tuning > Variable Graphics Memory), requiring a restart — converts system RAM into a single contiguous dedicated VRAM block for the iGPU; presets are Default/Medium/High/Custom(75%) for casual/gamer/power/AI-enthusiast users.",
+        "confidence": "high",
+        "sources": [
+          "https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html",
+          "https://www.amd.com/en/resources/articles/run-openclaw-locally-on-amd-ryzen-ai-max-and-radeon-gpus.html"
+        ],
+        "evidence": "AMD FAQ describes VGM as a BIOS-level feature reallocating a % of system RAM to integrated graphics as a single contiguous dedicated block, set in Adrenalin and requiring reboot, with the exact preset-to-user mapping. The OpenClaw article gives the concrete instruction: set VGM to 96GB and restart (discrete Radeon users skip this, using dedicated VRAM instead).",
+        "vote": "3-0"
+      },
+      {
+        "claim": "On the 128GB Ryzen AI Max+ 395, default config exposes only 512MB dedicated graphics memory; VGM can be set up to 96GB, and the iGPU can technically access up to ~112GB total graphics memory, with best performance when workloads are limited to 96GB.",
+        "confidence": "high",
+        "sources": [
+          "https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html"
+        ],
+        "evidence": "AMD: '128GB system by default would be set to 512 MB discrete graphics memory'; 'highest performance can be unlocked by limiting workloads to 96GB – but if needed – the iGPU (set to 96GB VGM) can technically access a total graphics memory size of 112GB.' The '64.3GB default addressable' figure was not directly verifiable but is consistent with 512MB + ~half of 128GB shared.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "With up to 96GB allocated as dedicated graphics memory, the Ryzen AI Max+ 395 (128GB) can run 4-bit (Q4_K_M) LLMs/VLMs up to 128B parameters, or FP16 models up to 32B (e.g., Gemma 3 27B FP16), on the integrated GPU.",
+        "confidence": "high",
+        "sources": [
+          "https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html"
+        ],
+        "evidence": "AMD FAQ states this verbatim, positioning the 128GB part as the choice for users who 'must run the highest quality model.' Corroborated by AMD's 'Run up to 128 Billion parameter LLMs on Windows with LM Studio' blog and third-party VRAM guides.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "gpt-oss-120b (MXFP4, ~116.8B params, ~59GiB) is usable on a single Strix Halo APU: ~685 tok/sec prompt processing and ~51 tok/sec generation under ROCm; ~720 tok/sec pp and ~57 tok/sec tg under Vulkan.",
+        "confidence": "high",
+        "sources": [
+          "https://kyuz0.github.io/amd-strix-halo-toolboxes/"
+        ],
+        "evidence": "kyuz0 benchmark suite (reproducible CSV, the reference for this APU): gpt-oss-120b-mxfp4 ROCm pp512 684.87 / tg128 51.48; Vulkan pp512 719.91 / tg128 56.61. Independent llama.cpp runs on the same gfx1151 cluster tightly (Vulkan 726.99 pp / 55.57 tg). Figures fluctuate ~±5 tg with build/backend but the '120B-class is usable at ~50+ tok/sec' conclusion is robust.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "On Strix Halo, Vulkan (RADV) frequently matches or exceeds ROCm on token-generation throughput, even though ROCm often wins prompt processing (e.g., GLM-4.7-Flash-Q8: Vulkan 41.17 tg t/s vs ROCm ~35).",
+        "confidence": "medium",
+        "sources": [
+          "https://kyuz0.github.io/amd-strix-halo-toolboxes/"
+        ],
+        "evidence": "Raw kyuz0 logs: vulkan_radv tg128 41.17 vs rocm 35.50/35.52 — exact match for the tg claim, corroborated by thefrontierlab.ai (+25-32% tg for RADV on Qwen3 MoE). CAVEAT (and why this got 2-1): the claim's pp qualifier is wrong for this datapoint — RADV pp512 (1092) actually BEAT ROCm (931); only the discontinued amdvlk was slower. The tg thesis holds; the 'ROCm wins pp' generalization is shaky. A separate Phoronix-based claim that Vulkan beats ROCm across ALL tasks/models was refuted (0-3), so treat backend choice as workload-dependent.",
+        "vote": "2-1"
+      },
+      {
+        "claim": "AMD publishes an official Best Known Configuration (BKC) to run the OpenClaw local AI agent on Ryzen AI Max+ via WSL2 (Ubuntu 24.04) on Windows, using LM Studio (llama.cpp backend) for fully local LLM provisioning including local-embedding Memory.md support.",
+        "confidence": "high",
+        "sources": [
+          "https://www.amd.com/en/resources/articles/run-openclaw-locally-on-amd-ryzen-ai-max-and-radeon-gpus.html",
+          "https://lmstudio.ai/docs/integrations/openclaw",
+          "https://docs.openclaw.ai/providers/lmstudio"
+        ],
+        "evidence": "AMD article: BKC for OpenClaw via WSL2 enables 'fully local LLM provisioning with functional Memory.md support through local embeddings, powered by LM Studio using llama.cpp.' Memory.md requires switching the default cloud embedding model to local via the memorysearch parameter in openclaw.json. Corroborated by TechSpot, VideoCardz, WccfTech and OpenClaw's own docs.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "On Ryzen AI Max+ (128GB) running Qwen 3.5 35B A3B, OpenClaw delivers ~45 tok/sec, processes 10,000 input tokens in ~19.5s, supports up to a 260K-token context window, and runs up to 6 agents concurrently.",
+        "confidence": "medium",
+        "sources": [
+          "https://www.amd.com/en/resources/articles/run-openclaw-locally-on-amd-ryzen-ai-max-and-radeon-gpus.html"
+        ],
+        "evidence": "AMD article states all four figures verbatim; TechSpot independently confirms each. Blaine Brown's M1 Ultra test of the same model in OpenClaw at 262K context got ~44 tok/sec, consistent. CAVEAT (2-1 vote): these are AMD vendor/best-case benchmarks, though not overstated and externally corroborated.",
+        "vote": "2-1"
+      },
+      {
+        "claim": "OpenClaw is endpoint-agnostic and routes to local LLMs via OpenAI-compatible /v1/chat/completions endpoints, with native LM Studio support and documented backends: LM Studio, Ollama, vLLM, SGLang, MLX (mlx_lm.server), LiteLLM, and custom OpenAI-style proxies. It needs a model configured with >~50k context (example: qwen/qwen3.5-9b).",
+        "confidence": "high",
+        "sources": [
+          "https://docs.openclaw.ai/gateway/local-models",
+          "https://lmstudio.ai/docs/integrations/openclaw",
+          "https://docs.openclaw.ai/providers/lmstudio"
+        ],
+        "evidence": "OpenClaw docs list all backends working via OpenAI-style endpoints; LM Studio is a bundled native provider (provider id 'lmstudio', base URL http://localhost:1234/v1). Docs require '>~50k context length' because agent tools consume heavy context, using qwen/qwen3.5-9b as the example model. Local-only is described as 'the strongest privacy path; hosted regional routing is the middle ground.'",
+        "vote": "3-0"
+      },
+      {
+        "claim": "Nous Research's Hermes Agent is hardware-flexible and does NOT run model inference locally itself — it calls external/OpenAI-compatible inference endpoints (Nous Portal, OpenRouter, OpenAI, Ollama, vLLM, llama.cpp, LM Studio, or any /v1/chat/completions server). 'No local GPU is required for the agent itself.'",
+        "confidence": "high",
+        "sources": [
+          "https://hermes-agent.nousresearch.com/docs/",
+          "https://github.com/NousResearch/hermes-agent/blob/main/README.md"
+        ],
+        "evidence": "Docs: 'Lives wherever you put it — a $5 VPS, a GPU cluster, or serverless infrastructure' and 'Works with Nous Portal, OpenRouter, OpenAI, or any endpoint.' README confirms inference is API-driven, agent not tied to your laptop, six terminal backends (local/Docker/SSH/Singularity/Modal/Daytona). Implication: on the ZBook you'd run a local LM Studio/Ollama server and point Hermes at it; the Strix Halo serves the model, not the agent.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "Running models locally (e.g., via Ollama) for Hermes/agents incurs zero API cost — only ~$0.01-0.05/session electricity — with no data leaving the machine (other than the one-time model download) and no telemetry.",
+        "confidence": "medium",
+        "sources": [
+          "https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup"
+        ],
+        "evidence": "Nous docs: 'No API keys, no subscriptions, no data leaving your machine'; cost table shows Ollama $0.00 vs Claude ~$0.80/session, 'roughly $0.01-0.05 per session depending on hardware.' Source is secondary/vendor-guide but well-hedged and independently corroborated (Ollama makes no inference-time network calls, no telemetry; ~120W Strix Halo platform makes the cost range realistic).",
+        "vote": "3-0"
+      },
+      {
+        "claim": "Claude Code can be pointed at a local model server via the ANTHROPIC_BASE_URL environment variable, because Docker Model Runner exposes an Anthropic-compatible Messages API (e.g., ANTHROPIC_BASE_URL=http://localhost:12434 claude --model ...).",
+        "confidence": "medium",
+        "sources": [
+          "https://www.docker.com/blog/run-claude-code-with-docker/",
+          "https://docs.docker.com/guides/claude-code-model-runner/"
+        ],
+        "evidence": "Docker docs show the exact command; DMR added Anthropic Messages API support (/v1/messages) in Docker Desktop 4.58.0 (~Jan 2026). Secondary/vendor source but backed by official Docker docs. CAVEAT: a related claim that this 'keeps the standard Claude Code experience' was refuted (1-2) — caveats include port 12434 conflicts, WSL mirrored-networking requirement, and small default context windows on local models.",
+        "vote": "3-0"
+      },
+      {
+        "claim": "mcp-local-llm is an MCP server that lets Claude Code delegate routine/mechanical work to a local Ollama model to cut API costs, exposing tools local_summarize, local_draft, local_classify, local_extract, local_transform, local_complete, and local_status. Recommended split: bulk summarization, boilerplate, extraction/formatting, simple classification, and initial drafts go local; complex reasoning, architecture decisions, security-sensitive ops, and novel problem-solving stay on the cloud model.",
+        "confidence": "high",
+        "sources": [
+          "https://github.com/aplaceforallmystuff/mcp-local-llm"
+        ],
+        "evidence": "Repo: 'Claude does the thinking; your local model handles the grunt work... a cost-optimization layer. Claude stays in control, decides what to delegate, and reviews the output.' All seven tool names match the README verbatim, and the delegation philosophy (local for volume, cloud for quality/sensitive) is independently corroborated by multiple 2026 hybrid-LLM guides. This is the canonical pattern for reducing API bills while preserving confidentiality on sensitive code.",
+        "vote": "3-0"
+      }
+    ],
+    "caveats": "Source mix: hardware-config and capability claims rest on strong primary sources (AMD ROCm docs, AMD blogs/FAQ, the kyuz0 reproducible benchmark suite). Performance figures, however, come from two flavors that warrant caution. (1) AMD's OpenClaw/Qwen numbers (~45 tok/sec, 260K context, 6 agents) are vendor best-case marketing benchmarks — corroborated but not adversarially independent (claims voted 2-1). (2) gpt-oss-120b throughput is solidly independent (kyuz0 + community llama.cpp runs) but fluctuates ±5 tok/sec across ROCm/Vulkan builds. Backend choice (ROCm vs Vulkan) is workload-dependent, NOT a clean win for either: the strong over-generalization 'Vulkan beats ROCm across all tasks' was refuted 0-3, and even the surviving Vulkan-tg-advantage claim had a wrong prompt-processing sub-qualifier (RADV actually beat ROCm on pp in the cited datapoint). NPU (XDNA 2) utilization for LLM inference was effectively absent from verified findings — current local-LLM throughput on this platform comes from the iGPU (8060S) via llama.cpp/ROCm/Vulkan, not the NPU; AMD's Lemonade/GAIA stack and NPU offload were not substantiated by surviving claims. Linux GTT tooling has real friction (ROCm issue #5562: wrong module name on Ryzen, a 62GB cap bug for some users). The 96GB VGM ceiling is a conservative Windows figure; ~112GB (Windows) / ~110GB (Linux GTT) is the true upper bound. Claude Code + Docker Model Runner integration is current (Jan 2026 feature) but does not perfectly replicate the cloud Claude experience (small context windows, networking caveats). Time-sensitivity: all software (ROCm versions, llama.cpp builds, LM Studio, OpenClaw v0.x, Hermes v0.2.0, DMR) is fast-moving as of mid-2026 — version-specific numbers will drift.",
+    "openQuestions": [
+      "Can the XDNA 2 NPU be used to accelerate or offload LLM inference (or just embeddings/draft-tokens) on this platform, and does AMD's Lemonade/GAIA stack deliver measurable tok/sec gains over the iGPU-only llama.cpp path? No surviving claim covered NPU utilization or Lemonade/GAIA performance.",
+      "What are verified tokens/sec figures specifically for Llama 70B and Qwen dense/MoE variants (not just gpt-oss-120b and Qwen 3.5 35B A3B) on this exact 128GB Strix Halo APU, across both ROCm and Vulkan?",
+      "For the Claude Code cost-reduction workflow, what is the measured real-world API-bill reduction and quality trade-off when routing via mcp-local-llm or ANTHROPIC_BASE_URL to a local model on this hardware — the tools' design intent is confirmed but independent savings/quality data is not.",
+      "Given Linux GTT can address ~110GB but has documented tooling bugs (62GB cap, module-naming), what is the current most-reliable Linux configuration recipe (distro, kernel, ROCm version) versus the Windows Adrenalin VGM path for maximizing usable model size with stability?"
+    ],
+    "refuted": [
+      {
+        "claim": "The Strix Halo (Ryzen AI Max+) platform delivers 256 GB/s memory bandwidth, roughly double that of lower-tier Ryzen AI 300 systems, which roughly doubles tokens/sec throughput; running a Llama 4 109B (17B active) model requires roughly 96GB of VRAM in Q4_K_M (4-bit) quantization.",
+        "vote": "1-2",
+        "source": "https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html"
+      },
+      {
+        "claim": "Using Docker Model Runner with Claude Code lets you run models locally while keeping the standard Claude Code experience.",
+        "vote": "1-2",
+        "source": "https://www.docker.com/blog/run-claude-code-with-docker/"
+      },
+      {
+        "claim": "On the Ryzen AI Max+ 395 'Strix Halo' (Radeon 8060S iGPU), the Vulkan llama.cpp backend outperforms the ROCm 7.0 HIP backend for local LLM inference across all tested tasks and models, with the largest advantage in text generation and longer prompts.",
+        "vote": "0-3",
+        "source": "https://www.phoronix.com/review/amd-rocm-7-strix-halo"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://github.com/Gygeek/Framework-strix-halo-llm-setup",
+        "quality": "blog",
+        "angle": "state-of-art software stack",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.modemguides.com/blogs/ai-infrastructure/ryzen-ai-max-395-local-llm-reality-check",
+        "quality": "blog",
+        "angle": "state-of-art software stack",
+        "claimCount": 5
+      },
+      {
+        "url": "https://hermes-agent.nousresearch.com/docs/",
+        "quality": "primary",
+        "angle": "state-of-art software stack",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.mindstudio.ai/blog/run-local-ai-models-with-claude-code-cut-costs",
+        "quality": "blog",
+        "angle": "state-of-art software stack",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/aplaceforallmystuff/mcp-local-llm",
+        "quality": "primary",
+        "angle": "state-of-art software stack",
+        "claimCount": 5
+      },
+      {
+        "url": "https://forum.level1techs.com/t/strix-halo-ryzen-ai-max-395-llm-benchmark-results/233796",
+        "quality": "forum",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/hogeheer499-commits/strix-halo-guide",
+        "quality": "blog",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.jdhodges.com/blog/amd-strix-halo-vram-allocation-ryzen-ai-max-395/",
+        "quality": "blog",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.jeffgeerling.com/blog/2025/increasing-vram-allocation-on-amd-ai-apus-under-linux/",
+        "quality": "blog",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strixhalo.html",
+        "quality": "primary",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html",
+        "quality": "primary",
+        "angle": "benchmarks & memory allocation",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.amd.com/en/resources/articles/run-openclaw-locally-on-amd-ryzen-ai-max-and-radeon-gpus.html",
+        "quality": "primary",
+        "angle": "local agent frameworks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup",
+        "quality": "secondary",
+        "angle": "local agent frameworks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://lmstudio.ai/docs/integrations/openclaw",
+        "quality": "primary",
+        "angle": "local agent frameworks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://docs.openclaw.ai/gateway/local-models",
+        "quality": "primary",
+        "angle": "local agent frameworks",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.shawnmayzes.com/ai-engineering/claude-code-local-llm-2026/",
+        "quality": "blog",
+        "angle": "hybrid cloud+local CLI workflow",
+        "claimCount": 5
+      },
+      {
+        "url": "https://medium.com/codex/using-local-llm-models-with-claude-code-a-step-by-step-guide-with-ccproxy-tools-b3551a139d81",
+        "quality": "blog",
+        "angle": "hybrid cloud+local CLI workflow",
+        "claimCount": 5
+      },
+      {
+        "url": "https://techsy.io/en/blog/claude-code-use-different-models",
+        "quality": "blog",
+        "angle": "hybrid cloud+local CLI workflow",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.docker.com/blog/run-claude-code-with-docker/",
+        "quality": "secondary",
+        "angle": "hybrid cloud+local CLI workflow",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.phoronix.com/review/amd-rocm-7-strix-halo",
+        "quality": "secondary",
+        "angle": "Windows vs Linux tradeoff",
+        "claimCount": 4
+      },
+      {
+        "url": "https://runaihome.com/blog/amd-lemonade-local-llm-server-npu-gpu-guide-2026/",
+        "quality": "blog",
+        "angle": "Windows vs Linux tradeoff",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.hardware-corner.net/strix-halo-llm-optimization/",
+        "quality": "blog",
+        "angle": "Windows vs Linux tradeoff",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=Hdg7zL3pcIs",
+        "quality": "blog",
+        "angle": "Windows vs Linux tradeoff",
+        "claimCount": 5
+      },
+      {
+        "url": "https://kyuz0.github.io/amd-strix-halo-toolboxes/",
+        "quality": "primary",
+        "angle": "recent developments & community",
+        "claimCount": 5
+      },
+      {
+        "url": "https://sleepingrobots.com/dreams/lemonade-server-npu-strix-halo/",
+        "quality": "blog",
+        "angle": "recent developments & community",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.kdnuggets.com/pairing-claude-code-with-local-models",
+        "quality": "secondary",
+        "angle": "recent developments & community",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.turingpost.com/p/hermes",
+        "quality": "secondary",
+        "angle": "recent developments & community",
+        "claimCount": 5
+      }
+    ],
+    "stats": {
+      "angles": 6,
+      "sourcesFetched": 27,
+      "claimsExtracted": 134,
+      "claimsVerified": 25,
+      "confirmed": 22,
+      "killed": 3,
+      "afterSynthesis": 15,
+      "urlDupes": 6,
+      "budgetDropped": 3,
+      "agentCalls": 110
+    }
+  }
+}

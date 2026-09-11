@@ -1,0 +1,9 @@
+{
+  "name": "docs",
+  "tool": "local_generate_docs",
+  "args": {
+    "code": "/**\n * Parses the value of an HTTP Retry-After header into a number of\n * seconds to wait before retrying.\n */\nexport function parseRetryAfterHeader(value: string): number {\n  const trimmed = value.trim();\n\n  if (trimmed.length === 0) {\n    return 0;\n  }\n\n  // Retry-After can be given as a plain integer number of seconds.\n  if (/^\\d+$/.test(trimmed)) {\n    return parseInt(trimmed, 10);\n  }\n\n  // Otherwise it should be an HTTP-date (RFC 7231), e.g.\n  // \"Wed, 21 Oct 2026 07:28:00 GMT\".\n  const dateMs = Date.parse(trimmed);\n  if (Number.isNaN(dateMs)) {\n    throw new Error(`invalid Retry-After value: \"${value}\"`);\n  }\n\n  const deltaMs = dateMs - Date.now();\n  const deltaSeconds = Math.ceil(deltaMs / 1000);\n\n  return deltaSeconds > 0 ? deltaSeconds : 0;\n}\n",
+    "style": "jsdoc"
+  },
+  "judging_notes": "expects jsdoc covering both accepted input forms (seconds integer, HTTP-date), the return semantics, and the thrown error case for unparseable input."
+}

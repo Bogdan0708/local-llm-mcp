@@ -1,0 +1,9 @@
+{
+  "name": "tests",
+  "tool": "local_generate_tests",
+  "args": {
+    "code": "// Synthetic pure function: groups invoices by calendar quarter.\nfunction groupInvoicesByQuarter(invoices) {\n  const groups = {};\n\n  for (const invoice of invoices) {\n    const date = new Date(invoice.date);\n    const year = date.getUTCFullYear();\n    const month = date.getUTCMonth(); // 0-11\n    const quarter = Math.floor(month / 3) + 1;\n    const key = `${year}-Q${quarter}`;\n\n    if (!groups[key]) {\n      groups[key] = { quarter: key, invoices: [], total: 0 };\n    }\n\n    groups[key].invoices.push(invoice);\n    groups[key].total += invoice.amount;\n  }\n\n  return Object.values(groups).sort((a, b) => a.quarter.localeCompare(b.quarter));\n}\n\nmodule.exports = { groupInvoicesByQuarter };\n",
+    "framework": "node:test"
+  },
+  "judging_notes": "outputs are executed directly with `node --test` against a scratch copy of groupInvoicesByQuarter during judging; tests should cover: empty input, single quarter grouping, invoices spanning multiple quarters/years, and total summation correctness."
+}
